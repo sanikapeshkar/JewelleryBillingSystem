@@ -1,9 +1,17 @@
 export interface DailyRateFormData {
-  metalId: string;
   metalName: string;
-  ratePerGram: number;
-  tax: number;
+  metalId: string;
+  rate: number;
   color: string;
+  ld: string;
+  gm: string;
+  purity: number;
+  customerPercentage: number;
+  taxInclude: boolean;
+  additionalRates: boolean;
+  tax: number;
+  rateWithTax?: number;
+  taxAmount?: number;
   makingCharges: number;
   comments?: string;
 }
