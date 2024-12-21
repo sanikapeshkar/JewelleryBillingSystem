@@ -1,0 +1,32 @@
+.rates-bar {
+  background-color: #1a237e;
+  color: white;
+  padding: 0.5rem 0;
+  width: 100%;
+}
+
+.rates-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+.rate-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rate-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.rate-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffd700;
+} 

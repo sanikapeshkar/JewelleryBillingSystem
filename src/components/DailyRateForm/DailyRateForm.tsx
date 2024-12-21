@@ -23,24 +23,27 @@ const DailyRateForm: React.FC<DailyRateFormProps> = ({
     },
   });
 
-  // Watch values for calculating total
-  const ratePerGram = watch('ratePerGram', 0);
+  const rate = watch('rate', 0);
   const tax = watch('tax', 0);
-  const makingCharges = watch('makingCharges', 0);
+  const customerPercentage = watch('customerPercentage', 0);
 
-  // Calculate total amount with tax and making charges
-  const calculateTotal = () => {
-    const baseAmount = ratePerGram || 0;
+  const calculateTaxAmount = () => {
+    const baseAmount = rate || 0;
+    return ((baseAmount * (tax || 0)) / 100).toFixed(2);
+  };
+
+  const calculateRateWithTax = () => {
+    const baseAmount = rate || 0;
     const taxAmount = (baseAmount * (tax || 0)) / 100;
-    const total = baseAmount + taxAmount + (makingCharges || 0);
-    return total.toFixed(2);
+    return (baseAmount + taxAmount).toFixed(2);
   };
 
   const onSubmit = async (data: DailyRateFormData) => {
     try {
       const formData = {
         ...data,
-        totalAmount: calculateTotal(),
+        rateWithTax: calculateRateWithTax(),
+        taxAmount: calculateTaxAmount(),
       };
       
       onSubmitSuccess?.(formData);
@@ -52,78 +55,140 @@ const DailyRateForm: React.FC<DailyRateFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="daily-rate-form">
-      <h2 className="form-title">Set Daily Metal Rate</h2>
+      <h2 className="form-title">DAILY RATES PANEL</h2>
       
-      <div className="form-grid">
+      <div className="form-row">
         <Input
-          label="Metal ID"
-          name="metalId"
-          required
-          register={register}
-          errors={errors}
-          placeholder="Enter metal ID"
-        />
-
-        <Input
-          label="Metal Name"
+          label="Gold"
           name="metalName"
-          required
           register={register}
           errors={errors}
-          placeholder="e.g., Gold, Silver"
         />
+      </div>
 
+      <div className="form-row">
         <Input
-          label="Rate per Gram"
-          name="ratePerGram"
-          type="number"
-          required
+          label="Id"
+          name="metalId"
           register={register}
           errors={errors}
-          placeholder="Enter rate per gram"
         />
+      </div>
 
+      <div className="form-row split">
+        <div>
+          <Input
+            label="RATE"
+            name="rate"
+            type="number"
+            register={register}
+            errors={errors}
+          />
+          <span className="note-text">(Accept only Numeric Value)</span>
+        </div>
         <Input
-          label="Tax (%)"
-          name="tax"
-          type="number"
-          required
-          register={register}
-          errors={errors}
-          placeholder="Enter tax percentage"
-        />
-
-        <Input
-          label="Color"
+          label="COLOR"
           name="color"
           register={register}
           errors={errors}
-          placeholder="e.g., Yellow, White"
         />
+      </div>
 
+      <div className="form-row split-three">
         <Input
-          label="Making Charges"
+          label="LD"
+          name="ld"
+          register={register}
+          errors={errors}
+        />
+        <Input
+          label="GM"
+          name="gm"
+          register={register}
+          errors={errors}
+        />
+        <Input
+          label="PURITY%"
+          name="purity"
+          type="number"
+          register={register}
+          errors={errors}
+        />
+      </div>
+
+      <div className="form-row">
+        <Input
+          label="Customer Percentage"
+          name="customerPercentage"
+          type="number"
+          register={register}
+          errors={errors}
+        />
+      </div>
+
+      <div className="checkbox-group">
+        <label className="checkbox-label">
+          <input
+            type="checkbox"
+            {...register('taxInclude')}
+          />
+          TAX INCLUDE
+        </label>
+        <label className="checkbox-label">
+          <input
+            type="checkbox"
+            {...register('additionalRates')}
+          />
+          ADDITIONAL RATES
+        </label>
+      </div>
+
+      <div className="form-row split-three">
+        <Input
+          label="Tax %"
+          name="tax"
+          type="number"
+          register={register}
+          errors={errors}
+        />
+        <Input
+          label="RATE WITH TAX"
+          name="rateWithTax"
+          type="number"
+          register={register}
+          errors={errors}
+          value={calculateRateWithTax()}
+          disabled
+        />
+        <Input
+          label="TAX AMOUNT"
+          name="taxAmount"
+          type="number"
+          register={register}
+          errors={errors}
+          value={calculateTaxAmount()}
+          disabled
+        />
+      </div>
+
+      <div className="form-row">
+        <Input
+          label="MAKING CHARGES"
           name="makingCharges"
           type="number"
           register={register}
           errors={errors}
-          placeholder="Enter making charges"
+          placeholder="GM"
         />
       </div>
 
-      <div className="form-full-width">
+      <div className="form-row">
         <Input
-          label="Comments"
+          label="COMMENT"
           name="comments"
           register={register}
           errors={errors}
-          placeholder="Add any additional comments"
         />
-      </div>
-
-      <div className="total-amount">
-        <span className="total-label">Total Amount (with tax):</span>
-        <span className="total-value">₹ {calculateTotal()}</span>
       </div>
 
       <div className="form-actions">
@@ -132,7 +197,7 @@ const DailyRateForm: React.FC<DailyRateFormProps> = ({
           loading={isSubmitting}
           fullWidth
         >
-          Save Daily Rate
+          SUBMIT
         </Button>
       </div>
     </form>

@@ -1,27 +1,46 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import DailyRateForm from '@/components/DailyRateForm/DailyRateForm';
+import DailyRateTable from '@/components/DailyRateTable/DailyRateTable';
+import { DailyRateFormData } from '@/components/DailyRateForm/DailyRateForm.types';
+import { DailyRate } from '@/components/DailyRateTable/DailyRateTable.types';
 import './styles.css';
 
 const DailyRatePage = () => {
-  const handleSubmitSuccess = (data: any) => {
-    // Handle successful submission
-    console.log('Form submitted successfully:', data);
+  const [rates, setRates] = useState<DailyRate[]>([]);
+
+  const handleSubmitSuccess = (data: DailyRateFormData) => {
+    const newRate: DailyRate = {
+      id: Date.now().toString(), // In real app, this would come from backend
+      metalId: data.metalId,
+      metalName: data.metalName,
+      latestRate: data.ratePerGram,
+      purity: data.purity,
+      purityCarat: data.purityCarat || 0,
+      updatedAt: new Date().toISOString(),
+    };
+
+    setRates([newRate, ...rates]);
   };
 
-  const handleSubmitError = (error: any) => {
-    // Handle submission error
-    console.error('Form submission error:', error);
+  const handleDelete = (id: string) => {
+    setRates(rates.filter(rate => rate.id !== id));
   };
 
   return (
+    <div className="daily-rate-page-main">
     <div className="daily-rate-page">
-      <h1 className="page-title">Daily Rate Settings</h1>
+
       <DailyRateForm 
         onSubmitSuccess={handleSubmitSuccess}
-        onSubmitError={handleSubmitError}
+        onSubmitError={(error) => console.error(error)}
       />
+      <DailyRateTable 
+        rates={rates}
+        onDelete={handleDelete}
+      />
+    </div>
     </div>
   );
 };
